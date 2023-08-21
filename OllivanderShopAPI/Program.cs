@@ -1,9 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-
+using OllivandersShopAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<OllivandersShopDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("default"));
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
