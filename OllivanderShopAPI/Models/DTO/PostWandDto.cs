@@ -1,11 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
-namespace OllivandersShopAPI.Models
+namespace OllivandersShopAPI.Models.DTO
 {
-    public class Wand
+    public class PostWandDto
     {
-        public int Id { get; set; }
         [Required]
         [MaxLength(25)]
         public string Core { get; set; }
@@ -19,5 +18,4 @@ namespace OllivandersShopAPI.Models
         [MaxLength(80)]
         public string? TrueOwner { get; set; }
     }
-
 }
