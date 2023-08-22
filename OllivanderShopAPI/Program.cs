@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using OllivandersShopAPI.AppBuilderExtensions;
 using OllivandersShopAPI.Data;
 using Serilog;
 
@@ -25,27 +26,30 @@ try
             .ReadFrom.Configuration(jsonConfig);
     });
 
-    // Add services to the container.
     builder.Services.AddDbContext<OllivandersShopDbContext>(options =>
 	{
 		options.UseSqlServer(builder.Configuration.GetConnectionString("default"));
 	});
 
 	builder.Services.AddControllers();
-	// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    builder.Services.AddMapperly();
+
 	builder.Services.AddEndpointsApiExplorer();
 	builder.Services.AddSwaggerGen();
 
 	var app = builder.Build();
 
-	// Configure the HTTP request pipeline.
-	if (app.Environment.IsDevelopment())
+    #region Data seeding
+    //app.UseDataSeeder();
+    #endregion
+
+    if (app.Environment.IsDevelopment())
 	{
 		app.UseSwagger();
 		app.UseSwaggerUI();
 	}
 
-	app.UseHttpsRedirection();
+    app.UseHttpsRedirection();
 
 	app.UseAuthorization();
 
