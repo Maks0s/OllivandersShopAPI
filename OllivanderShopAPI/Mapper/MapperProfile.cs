@@ -5,7 +5,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace OllivandersShopAPI.Mapper
 {
-    [Mapper]
+    [Mapper(AllowNullPropertyAssignment = false)]
     public partial class MapperProfile : IMapper
     {
         public partial GetWandDto MapToGetWandDto(Wand wand);
@@ -20,7 +20,7 @@ namespace OllivandersShopAPI.Mapper
 
             return wandDtos;
         }
-        public partial Wand MapToWand(PostWandDto wand);
-        public partial Wand MapToWand(PutWandDto wand);
+        public partial Wand MapToWand(PostWandDto wandDto);
+        public partial void MapToWandToUpdate(PutWandDto wandDto, Wand wand);
     }
 }

@@ -7,7 +7,7 @@ namespace OllivandersShopAPI.Mapper.Abstractions
     {
         GetWandDto MapToGetWandDto(Wand wand);
         ICollection<GetWandDto> MapToGetWandsDto(ICollection<Wand> wands);
-        Wand MapToWand(PostWandDto wand);
-        Wand MapToWand(PutWandDto wand);
+        Wand MapToWand(PostWandDto wandDto);
+        void MapToWandToUpdate(PutWandDto wandDto, Wand wand);
     }
 }
