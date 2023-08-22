@@ -75,7 +75,7 @@ namespace OllivandersShopAPI.Controllers
             _logger.LogInformation("Map from DTO");
             var wandToAdd = _mapper.MapToWand(dto);
 
-            _logger.LogInformation("Add WAND {@dto}", dto);
+            _logger.LogInformation("Adding WAND {@dto}", dto);
             await _dbContext.AddAsync(wandToAdd);
             await _dbContext.SaveChangesAsync();
 
@@ -105,12 +105,32 @@ namespace OllivandersShopAPI.Controllers
             _mapper.MapToWandToUpdate(dto, wandToUpdate);
             var responseDto = _mapper.MapToGetWandDto(wandToUpdate);
 
-            _logger.LogInformation("Update WAND {@responseDto}", responseDto);
+            _logger.LogInformation("Updating WAND {@responseDto}", responseDto);
             _dbContext.Wands.Update(wandToUpdate);
             await _dbContext.SaveChangesAsync();
 
             return NoContent();
         }
-        
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<ActionResult> DeleteWand(int id)
+        {
+            var wandToDelete = await _dbContext.Wands.FindAsync(id);
+
+            if (wandToDelete is null)
+            {
+                _logger.LogWarning("WAND with ID:{id} not found", id);
+                return NotFound($"WAND with ID:{id} not found");
+            }
+
+            var responseDto = _mapper.MapToGetWandDto(wandToDelete);
+
+            _logger.LogInformation("Deleting WAND {@responseDto}", responseDto);
+            _dbContext.Wands.Remove(wandToDelete);
+            await _dbContext.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
