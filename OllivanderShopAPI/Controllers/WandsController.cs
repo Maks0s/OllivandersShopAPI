@@ -68,7 +68,30 @@ namespace OllivandersShopAPI.Controllers
             return Ok(dto);
         }
 
+        [HttpPost]
+        public async Task<ActionResult> PostWand([FromBody] PostWandDto dto)
+        {
+            if(dto is null)
+            {
+                _logger.LogWarning("Sent wand is null");
 
+                return BadRequest("Wand to add is NULL");
+            }
+
+            _logger.LogInformation("Map from DTO");
+
+            var wandToAdd = _mapper.MapToWand(dto);
+
+            _logger.LogInformation("Add wand {@dto} to DB", dto);
+
+            await _dbContext.AddAsync(wandToAdd);
+
+            await _dbContext.SaveChangesAsync();
+
+            var responseDto = _mapper.MapToGetWandDto(wandToAdd);
+
+            return CreatedAtAction(nameof(GetWandById), new { id = wandToAdd.Id}, responseDto);
+        }
         
     }
 }
