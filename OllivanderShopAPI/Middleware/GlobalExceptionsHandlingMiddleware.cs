@@ -27,11 +27,11 @@ namespace OllivandersShopAPI.Middleware
             }
             catch (Exception ex)
             {
-                await HandleException(context, ex);
+                await HandleExceptionAsync(context, ex);
             }
         }
 
-        private Task HandleException(HttpContext context, Exception ex)
+        private Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
             context.Response.ContentType = "application/json";
             var problemDetails = new ProblemDetails();
@@ -43,14 +43,16 @@ namespace OllivandersShopAPI.Middleware
                     _logger.LogError("{@problemDetails}", problemDetails);
                     break;
                 case Exception unhandled:
-                    problemDetails.Type = nameof(unhandled);
+                    problemDetails.Type = @"https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1";
                     problemDetails.Title = "Unexpected problems on the server side. Try again a little later";
                     problemDetails.Status = (int)HttpStatusCode.InternalServerError;
                     problemDetails.Detail = unhandled.Message;
                     problemDetails.Instance = unhandled.Source;
-                    _logger.LogError("{@problemDetails}", problemDetails);
+                    _logger.LogError(ex, "{@problemDetails}", problemDetails);
                     break;
             }
+
+            context.Response.StatusCode = (int)problemDetails.Status;
 
             return context.Response.WriteAsJsonAsync(problemDetails);
         }
