@@ -39,6 +39,8 @@ try
 
 	var app = builder.Build();
 
+    app.UseGlobalExceptionHandling();
+
     #region Data seeding
     //app.UseDataSeeder();
     #endregion

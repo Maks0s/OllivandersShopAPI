@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OllivandersShopAPI.Data;
+using OllivandersShopAPI.Exceptions;
 using OllivandersShopAPI.Mapper.Abstractions;
 using OllivandersShopAPI.Models;
 using OllivandersShopAPI.Models.DTO;
-using System.Net;
+
 
 namespace OllivandersShopAPI.Controllers
 {
@@ -33,9 +34,7 @@ namespace OllivandersShopAPI.Controllers
 
             if(wands.Count == 0)
             {
-                _logger.LogError("DB side error: DB is empty");
-
-                return Problem(title: "DB side error", detail: "DB is empty", statusCode: 500);
+                throw new ServerSideException("DB side error: DB is empty", Request.Path.Value);
             }
 
             _logger.LogInformation("Map to DTO");
@@ -53,8 +52,7 @@ namespace OllivandersShopAPI.Controllers
 
             if(wand is null)
             {
-                _logger.LogWarning("WAND with ID:{id} not found", id);
-                return NotFound($"WAND with ID:{id} not found");
+                throw new NotFoundException($"WAND with ID:{id} not found", Request.Path.Value);
             }
 
             _logger.LogInformation("Map to DTO");
@@ -68,8 +66,7 @@ namespace OllivandersShopAPI.Controllers
         {
             if(dto is null)
             {
-                _logger.LogWarning("Sent WAND is NULL");
-                return BadRequest("WAND to add is NULL");
+                throw new IncorrectObjectSentException("WAND to add is NULL", Request.Path.Value);
             }
 
             _logger.LogInformation("Map from DTO");
@@ -92,13 +89,11 @@ namespace OllivandersShopAPI.Controllers
 
             if(wandToUpdate is null)
             {
-                _logger.LogWarning("WAND with ID:{id} not found", id);
-                return NotFound($"WAND with ID:{id} not found");
+                throw new NotFoundException($"WAND with ID:{id} not found", Request.Path.Value);
             }
             if (dto is null)
             {
-                _logger.LogWarning("Sent WAND is NULL");
-                return BadRequest("WAND to update is NULL");
+                throw new IncorrectObjectSentException("WAND to add is NULL", Request.Path.Value);
             }
 
             _logger.LogInformation("Map from DTO");
@@ -120,8 +115,7 @@ namespace OllivandersShopAPI.Controllers
 
             if (wandToDelete is null)
             {
-                _logger.LogWarning("WAND with ID:{id} not found", id);
-                return NotFound($"WAND with ID:{id} not found");
+                throw new NotFoundException($"WAND with ID:{id} not found", Request.Path.Value);
             }
 
             var responseDto = _mapper.MapToGetWandDto(wandToDelete);
