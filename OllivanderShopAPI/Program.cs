@@ -39,7 +39,7 @@ try
 
 	var app = builder.Build();
 
-    app.UseGlobalExceptionHandling();
+    app.UseExceptionHandler("/error");
 
     #region Data seeding
     //app.UseDataSeeder();
