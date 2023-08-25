@@ -14,52 +14,42 @@ namespace OllivandersShopAPI.Controllers
     [Route("api/[controller]")]
     public class WandsController : ControllerBase
     {
-        private readonly ILogger<WandsController> _logger;
         private readonly IWandRepository _wandRepository;
-        private readonly IMapper _mapper;
 
-        public WandsController(ILogger<WandsController> logger,
-            IWandRepository wandRepository,
-            IMapper mapper)
+        public WandsController(IWandRepository wandRepository)
         {
-            _logger = logger;
             _wandRepository = wandRepository;
-            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<ActionResult<ICollection<GetWandDto>>> GetAllWands()
         {
-            _logger.LogInformation("Getting all WANDS from DB");
-            var wands = await _dbContext.Wands.ToListAsync();
+            var getAllResult = await _wandRepository.GetAllWandsAsync();
 
-            if(wands.Count == 0)
-            {
-                throw new ServerSideException("DB side error: DB is empty", Request.Path.Value);
-            }
-
-            _logger.LogInformation("Map to DTO");
-            var dto = _mapper.MapToGetWandsDto(wands);
-
-            return Ok(dto);
+            return getAllResult.MatchFirst<ActionResult>(
+                received => Ok(received),
+                error => Problem(
+                    title: error.Code,
+                    detail: error.Description,
+                    statusCode: error.NumericType,
+                    instance: Request.Path.Value
+                    ));
         }
 
         [HttpGet]
         [Route("{id}")]
         public async Task<ActionResult<GetWandDto>> GetWandById(int id)
         {
-            _logger.LogInformation("Getting WAND from DB with id:{id}", id);
-            var wand = await _dbContext.Wands.FindAsync(id);
+            var getByIdResult = await _wandRepository.GetWandByIdAsync(id);
 
-            if(wand is null)
-            {
-                throw new NotFoundException($"WAND with ID:{id} not found", Request.Path.Value);
-            }
-
-            _logger.LogInformation("Map to DTO");
-            var dto = _mapper.MapToGetWandDto(wand);
-
-            return Ok(dto);
+            return getByIdResult.MatchFirst<ActionResult>(
+                received => Ok(received),
+                error => Problem(
+                    title: error.Code,
+                    detail: error.Description,
+                    statusCode: error.NumericType,
+                    instance: Request.Path.Value
+                    ));
         }
 
         [HttpPost]
@@ -68,13 +58,13 @@ namespace OllivandersShopAPI.Controllers
             var postResult = await _wandRepository.AddWandAsync(dto);
 
             return postResult.MatchFirst<ActionResult>(
-                posted => CreatedAtAction(nameof(GetWandById), new { id = posted }, responseDto);
-        });
-
-
-
-
-                //CreatedAtAction(nameof(GetWandById), new { id = wandToAdd.Id}, responseDto);
+                posted => CreatedAtAction(nameof(GetWandById), new { id = posted.Id }, dto),
+                error => Problem(
+                    title: error.Code,
+                    detail: error.Description,
+                    statusCode: error.NumericType,
+                    instance: Request.Path.Value
+                    ));
         }
 
         [HttpPut]
@@ -88,8 +78,9 @@ namespace OllivandersShopAPI.Controllers
                 error => Problem(
                     title: error.Code,
                     detail: error.Description,
-                    statusCode: error.NumericType)
-                );
+                    statusCode: error.NumericType,
+                    instance: Request.Path.Value
+                    ));
         }
 
         [HttpDelete]
@@ -103,8 +94,9 @@ namespace OllivandersShopAPI.Controllers
                 error => Problem(
                     title: error.Code,
                     detail: error.Description,
-                    statusCode: error.NumericType)
-                );
+                    statusCode: error.NumericType,
+                    instance: Request.Path.Value
+                    ));
         }
     }
 }

@@ -32,6 +32,7 @@ try
 	});
 
 	builder.Services.AddControllers();
+    builder.Services.AddWandRepository();
     builder.Services.AddMapperly();
 
 	builder.Services.AddEndpointsApiExplorer();

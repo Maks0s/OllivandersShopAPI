@@ -5,6 +5,7 @@ using OllivandersShopAPI.Data.DataAccess.Repositories.Abstractions;
 using OllivandersShopAPI.Data.DataAccess.Repositories.EfDbContext;
 using OllivandersShopAPI.Errors;
 using OllivandersShopAPI.Mapper.Abstractions;
+using OllivandersShopAPI.Models;
 using OllivandersShopAPI.Models.DTO;
 
 namespace OllivandersShopAPI.Data.DataAccess.Repositories
@@ -12,12 +13,12 @@ namespace OllivandersShopAPI.Data.DataAccess.Repositories
     public class WandRepository : IWandRepository
     {
         private readonly OllivandersShopDbContext _dbContext;
-        private readonly ILogger _logger;
+        private readonly ILogger<WandRepository> _logger;
         private readonly IMapper _mapper;
 
         public WandRepository(
             OllivandersShopDbContext dbContext, 
-            ILogger logger,
+            ILogger<WandRepository> logger,
             IMapper mapper)
         {
             _dbContext = dbContext;
@@ -57,7 +58,7 @@ namespace OllivandersShopAPI.Data.DataAccess.Repositories
             return dto;
         }
 
-        public async Task<ErrorOr<GetWandDto>> AddWandAsync(PostWandDto dto)
+        public async Task<ErrorOr<Wand>> AddWandAsync(PostWandDto dto)
         {
             if (dto is null)
             {
@@ -71,9 +72,7 @@ namespace OllivandersShopAPI.Data.DataAccess.Repositories
             await _dbContext.AddAsync(wandToAdd);
             await _dbContext.SaveChangesAsync();
 
-            var responseDto = _mapper.MapToGetWandDto(wandToAdd);
-
-            return responseDto;
+            return wandToAdd;
         }
 
         public async Task<ErrorOr<Updated>> UpdateWandAsync(int id, PutWandDto dto)
