@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OllivandersShopAPI.Data.DataAccess.Repositories.EfDbContext;
 using OllivandersShopAPI.Models;
 
 namespace OllivandersShopAPI.Data.Seeder

@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OllivandersShopAPI.Models;
 
-namespace OllivandersShopAPI.Data
+namespace OllivandersShopAPI.Data.DataAccess.Repositories.EfDbContext
 {
-    public class OllivandersShopDbContext : DbContext
+    public class OllivandersShopDbContext : Microsoft.EntityFrameworkCore.DbContext
     {
         public DbSet<Wand> Wands { get; set; }
 

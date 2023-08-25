@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ErrorOr;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OllivandersShopAPI.Data;
-using OllivandersShopAPI.Exceptions;
+using OllivandersShopAPI.Data.DataAccess.Repositories;
+using OllivandersShopAPI.Data.DataAccess.Repositories.Abstractions;
+using OllivandersShopAPI.Errors;
 using OllivandersShopAPI.Mapper.Abstractions;
-using OllivandersShopAPI.Models;
 using OllivandersShopAPI.Models.DTO;
-
+using System.Net;
 
 namespace OllivandersShopAPI.Controllers
 {
@@ -14,15 +15,15 @@ namespace OllivandersShopAPI.Controllers
     public class WandsController : ControllerBase
     {
         private readonly ILogger<WandsController> _logger;
-        private readonly OllivandersShopDbContext _dbContext;
+        private readonly IWandRepository _wandRepository;
         private readonly IMapper _mapper;
 
-        public WandsController(ILogger<WandsController> logger, 
-            OllivandersShopDbContext dbContext,
+        public WandsController(ILogger<WandsController> logger,
+            IWandRepository wandRepository,
             IMapper mapper)
         {
             _logger = logger;
-            _dbContext = dbContext;
+            _wandRepository = wandRepository;
             _mapper = mapper;
         }
 
@@ -64,67 +65,46 @@ namespace OllivandersShopAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> PostWand([FromBody] PostWandDto dto)
         {
-            if(dto is null)
-            {
-                throw new IncorrectObjectSentException("WAND to add is NULL", Request.Path.Value);
-            }
+            var postResult = await _wandRepository.AddWandAsync(dto);
 
-            _logger.LogInformation("Map from DTO");
-            var wandToAdd = _mapper.MapToWand(dto);
+            return postResult.MatchFirst<ActionResult>(
+                posted => CreatedAtAction(nameof(GetWandById), new { id = posted }, responseDto);
+        });
 
-            _logger.LogInformation("Adding WAND {@dto}", dto);
-            await _dbContext.AddAsync(wandToAdd);
-            await _dbContext.SaveChangesAsync();
 
-            var responseDto = _mapper.MapToGetWandDto(wandToAdd);
 
-            return CreatedAtAction(nameof(GetWandById), new { id = wandToAdd.Id}, responseDto);
+
+                //CreatedAtAction(nameof(GetWandById), new { id = wandToAdd.Id}, responseDto);
         }
 
         [HttpPut]
         [Route("{id}")]
         public async Task<ActionResult> PutWand(int id, [FromBody] PutWandDto dto)
         {
-            var wandToUpdate = await _dbContext.Wands.FindAsync(id);
+            var updateResult = await _wandRepository.UpdateWandAsync(id, dto);
 
-            if(wandToUpdate is null)
-            {
-                throw new NotFoundException($"WAND with ID:{id} not found", Request.Path.Value);
-            }
-            if (dto is null)
-            {
-                throw new IncorrectObjectSentException("WAND to add is NULL", Request.Path.Value);
-            }
-
-            _logger.LogInformation("Map from DTO");
-            _mapper.MapToWandToUpdate(dto, wandToUpdate);
-            var responseDto = _mapper.MapToGetWandDto(wandToUpdate);
-
-            _logger.LogInformation("Updating WAND {@responseDto}", responseDto);
-            _dbContext.Wands.Update(wandToUpdate);
-            await _dbContext.SaveChangesAsync();
-
-            return NoContent();
+            return updateResult.MatchFirst<ActionResult>(
+                deleted => NoContent(),
+                error => Problem(
+                    title: error.Code,
+                    detail: error.Description,
+                    statusCode: error.NumericType)
+                );
         }
 
         [HttpDelete]
         [Route("{id}")]
         public async Task<ActionResult> DeleteWand(int id)
         {
-            var wandToDelete = await _dbContext.Wands.FindAsync(id);
+            var deleteResult = await _wandRepository.DeleteWandAsync(id);
 
-            if (wandToDelete is null)
-            {
-                throw new NotFoundException($"WAND with ID:{id} not found", Request.Path.Value);
-            }
-
-            var responseDto = _mapper.MapToGetWandDto(wandToDelete);
-
-            _logger.LogInformation("Deleting WAND {@responseDto}", responseDto);
-            _dbContext.Wands.Remove(wandToDelete);
-            await _dbContext.SaveChangesAsync();
-
-            return NoContent();
+            return deleteResult.MatchFirst<ActionResult>(
+                deleted => NoContent(),
+                error => Problem(
+                    title: error.Code,
+                    detail: error.Description,
+                    statusCode: error.NumericType)
+                );
         }
     }
 }

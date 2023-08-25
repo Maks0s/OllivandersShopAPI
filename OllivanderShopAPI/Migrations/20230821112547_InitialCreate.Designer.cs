@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using OllivandersShopAPI.Data;
+using OllivandersShopAPI.Data.DataAccess.Repositories.EfDbContext;
 
 #nullable disable
 

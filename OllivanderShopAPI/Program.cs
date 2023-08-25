@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using OllivandersShopAPI.AppBuilderExtensions;
-using OllivandersShopAPI.Data;
+using OllivandersShopAPI.Data.DataAccess.Repositories.EfDbContext;
 using Serilog;
 
 try
