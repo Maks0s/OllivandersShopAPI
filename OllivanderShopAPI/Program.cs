@@ -45,6 +45,8 @@ try
     //app.UseDataSeeder();
     #endregion
 
+    app.UseSerilogRequestLogging();
+
     if (app.Environment.IsDevelopment())
 	{
 		app.UseSwagger();
