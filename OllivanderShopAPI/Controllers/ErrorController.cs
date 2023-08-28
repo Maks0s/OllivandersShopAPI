@@ -25,7 +25,7 @@ namespace OllivandersShopAPI.Controllers
                 Title = "Unexpected problems on the server side. Try again a little later",
                 Status = (int)HttpStatusCode.InternalServerError,
                 Detail = exception?.Message,
-                Instance = exception?.Source
+                Instance = Request.Path.Value
             };
 
             _logger.LogError(exception, "{@problemDetails}", problemDetails);
