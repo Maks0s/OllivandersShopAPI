@@ -33,7 +33,9 @@ namespace OllivandersShopAPI.Data.DataAccess.Repositories
 
             if (wands.Count == 0)
             {
-                return ShopAPIErrors.ServerSide("DB side error: DB is empty");
+                var error = ShopAPIErrors.ServerSide("DB side error: DB is empty");
+                _logger.LogError("{@errorName} - {@error}", nameof(ShopAPIErrors.ServerSide), error);
+                return error;
             }
 
             _logger.LogInformation("Map to DTO");
@@ -49,7 +51,9 @@ namespace OllivandersShopAPI.Data.DataAccess.Repositories
 
             if (wand is null)
             {
-                return ShopAPIErrors.NotFound($"WAND with ID:{id} not found");
+                var error = ShopAPIErrors.NotFound($"WAND with ID:{id} not found");
+                _logger.LogError("{@errorName} - {@error}", nameof(ShopAPIErrors.NotFound), error);
+                return error;
             }
 
             _logger.LogInformation("Map to DTO");
@@ -62,7 +66,9 @@ namespace OllivandersShopAPI.Data.DataAccess.Repositories
         {
             if (dto is null)
             {
-                return ShopAPIErrors.IncorrectObjectSent("WAND to add is NULL");
+                var error = ShopAPIErrors.IncorrectObjectSent("WAND to add is NULL");
+                _logger.LogError("{@errorName} - {@error}", nameof(ShopAPIErrors.IncorrectObjectSent), error);
+                return error;
             }
 
             _logger.LogInformation("Map from DTO");
@@ -81,11 +87,15 @@ namespace OllivandersShopAPI.Data.DataAccess.Repositories
 
             if (wandToUpdate is null)
             {
-                return ShopAPIErrors.NotFound($"WAND with ID:{id} not found");
+                var error = ShopAPIErrors.NotFound($"WAND with ID:{id} not found");
+                _logger.LogError("{@errorName} - {@error}", nameof(ShopAPIErrors.NotFound), error);
+                return error;
             }
             if (dto is null)
             {
-                return ShopAPIErrors.IncorrectObjectSent("WAND to add is NULL");
+                var error = ShopAPIErrors.IncorrectObjectSent("WAND to add is NULL");
+                _logger.LogError("{@errorName} - {@error}", nameof(ShopAPIErrors.IncorrectObjectSent), error);
+                return error;
             }
 
             _logger.LogInformation("Map from DTO");
@@ -105,7 +115,9 @@ namespace OllivandersShopAPI.Data.DataAccess.Repositories
 
             if (wandToDelete is null)
             {
-                return ShopAPIErrors.NotFound($"WAND with ID:{id} not found");
+                var error = ShopAPIErrors.IncorrectObjectSent("WAND to add is NULL");
+                _logger.LogError("{@errorName} - {@error}", nameof(ShopAPIErrors.NotFound), error);
+                return error;
             }
 
             var responseDto = _mapper.MapToGetWandDto(wandToDelete);
