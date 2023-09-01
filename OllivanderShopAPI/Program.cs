@@ -33,6 +33,10 @@ try
 
 	builder.Services.AddControllers();
     builder.Services.AddWandRepository();
+    builder.Services.AddMediatR(cfg => 
+    {
+        cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+    }); 
     builder.Services.AddMapperly();
 
 	builder.Services.AddEndpointsApiExplorer();

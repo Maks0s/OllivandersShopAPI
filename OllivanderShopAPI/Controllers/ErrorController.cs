@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using OllivandersShopAPI.Errors;
+using OllivandersShopAPI.Models.Errors;
 using System;
 using System.Net;
 

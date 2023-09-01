@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OllivandersShopAPI.Data.DataAccess.Repositories;
 using OllivandersShopAPI.Data.DataAccess.Repositories.Abstractions;
-using OllivandersShopAPI.Errors;
+using OllivandersShopAPI.Models.Errors;
 using OllivandersShopAPI.Mapper.Abstractions;
 using OllivandersShopAPI.Models.DTO;
 using System.Net;
+using MediatR;
+using OllivandersShopAPI.CQRS.Wands.Commands;
 
 namespace OllivandersShopAPI.Controllers
 {
@@ -15,10 +17,12 @@ namespace OllivandersShopAPI.Controllers
     public class WandsController : ControllerBase
     {
         private readonly IWandRepository _wandRepository;
+        private readonly IMediator _mediator;
 
-        public WandsController(IWandRepository wandRepository)
+        public WandsController(IWandRepository wandRepository, IMediator mediator)
         {
             _wandRepository = wandRepository;
+            _mediator = mediator;
         }
 
         [HttpGet]
@@ -55,7 +59,12 @@ namespace OllivandersShopAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> PostWand([FromBody] PostWandDto dto)
         {
-            var postResult = await _wandRepository.AddWandAsync(dto);
+            var postResult = await _mediator.Send(new CreateCommand(
+                dto.Core,
+                dto.Wood,
+                dto.LengthInInches
+            ));
+                
 
             return postResult.MatchFirst<ActionResult>(
                 posted => CreatedAtAction(nameof(GetWandById), new { id = posted.Id }, dto),
