@@ -1,7 +1,7 @@
 ﻿using ErrorOr;
 using System.Net;
 
-namespace OllivandersShopAPI.Errors
+namespace OllivandersShopAPI.Models.Errors
 {
     public static class ShopAPIErrors
     {

@@ -3,10 +3,10 @@ using ErrorOr;
 using Microsoft.EntityFrameworkCore;
 using OllivandersShopAPI.Data.DataAccess.Repositories.Abstractions;
 using OllivandersShopAPI.Data.DataAccess.Repositories.EfDbContext;
-using OllivandersShopAPI.Errors;
 using OllivandersShopAPI.Mapper.Abstractions;
 using OllivandersShopAPI.Models;
 using OllivandersShopAPI.Models.DTO;
+using OllivandersShopAPI.Models.Errors;
 
 namespace OllivandersShopAPI.Data.DataAccess.Repositories
 {
