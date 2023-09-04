@@ -4,6 +4,7 @@ API project with features of:
 - All default CRUD operations
 - Logging
 - Mapping
+- CQRS (not for all endpoints)
 
 ### Technologies:
 - ASP.Net Core (Web API framework)
@@ -12,3 +13,4 @@ API project with features of:
 - Serilog (Logging)
 - Mapperly (Mapping)
 - Swagger/OpenApi (API test/documentation)
+- MediatR (CQRS)
