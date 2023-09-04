@@ -6,7 +6,7 @@ using OllivandersShopAPI.Models.DTO;
 using OllivandersShopAPI.Models;
 using OllivandersShopAPI.CQRS.Contracts;
 
-namespace OllivandersShopAPI.CQRS.Wands.Commands
+namespace OllivandersShopAPI.CQRS.Wands.Commands.Create
 {
     public class CreateCommandHandler
         : ICommandHandler<CreateCommand, Wand>

@@ -9,6 +9,8 @@ using OllivandersShopAPI.Models.DTO;
 using System.Net;
 using MediatR;
 using OllivandersShopAPI.CQRS.Wands.Commands;
+using OllivandersShopAPI.CQRS.Wands.Commands.Create;
+using OllivandersShopAPI.CQRS.Wands.Commands.Delete;
 
 namespace OllivandersShopAPI.Controllers
 {
@@ -76,13 +78,13 @@ namespace OllivandersShopAPI.Controllers
                     ));
         }
 
-        [HttpPut]
+        [HttpDelete]
         [Route("{id}")]
-        public async Task<ActionResult> PutWand(int id, [FromBody] PutWandDto dto)
+        public async Task<ActionResult> DeleteWand(int id)
         {
-            var updateResult = await _wandRepository.UpdateWandAsync(id, dto);
+            var deleteResult = await _mediator.Send(new DeleteCommand(id));
 
-            return updateResult.MatchFirst<ActionResult>(
+            return deleteResult.MatchFirst<ActionResult>(
                 deleted => NoContent(),
                 error => Problem(
                     title: error.Code,
@@ -92,13 +94,13 @@ namespace OllivandersShopAPI.Controllers
                     ));
         }
 
-        [HttpDelete]
+        [HttpPut]
         [Route("{id}")]
-        public async Task<ActionResult> DeleteWand(int id)
+        public async Task<ActionResult> PutWand(int id, [FromBody] PutWandDto dto)
         {
-            var deleteResult = await _wandRepository.DeleteWandAsync(id);
+            var updateResult = await _wandRepository.UpdateWandAsync(id, dto);
 
-            return deleteResult.MatchFirst<ActionResult>(
+            return updateResult.MatchFirst<ActionResult>(
                 deleted => NoContent(),
                 error => Problem(
                     title: error.Code,
