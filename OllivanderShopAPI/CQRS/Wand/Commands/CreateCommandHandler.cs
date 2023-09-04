@@ -4,11 +4,12 @@ using OllivandersShopAPI.Data.DataAccess.Repositories.Abstractions;
 using OllivandersShopAPI.Mapper.Abstractions;
 using OllivandersShopAPI.Models.DTO;
 using OllivandersShopAPI.Models;
+using OllivandersShopAPI.CQRS.Contracts;
 
 namespace OllivandersShopAPI.CQRS.Wands.Commands
 {
     public class CreateCommandHandler
-        : IRequestHandler<CreateCommand, ErrorOr<Wand>>
+        : ICommandHandler<CreateCommand, Wand>
     {
         private readonly IWandRepository _wandRepository;
 
